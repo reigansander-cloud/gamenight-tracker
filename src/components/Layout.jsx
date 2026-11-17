@@ -14,7 +14,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-lg" style={{ paddingTop: "env(safe-area-inset-top)" }}>
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
@@ -46,7 +46,7 @@ export default function Layout() {
       </header>
 
       {/* Mobile nav — always visible on all screen sizes */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur-lg">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur-lg" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         <div className="flex items-center justify-around h-16">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;

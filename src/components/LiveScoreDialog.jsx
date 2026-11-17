@@ -621,7 +621,7 @@ export default function LiveScoreDialog({ open, onClose, players, gameName, cust
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-lg w-full h-[100dvh] max-h-[100dvh] flex flex-col p-0 gap-0 overflow-hidden rounded-none sm:rounded-none [&>button]:hidden">
+      <DialogContent className="max-w-lg w-full h-[100dvh] max-h-[100dvh] flex flex-col p-0 gap-0 overflow-hidden rounded-none sm:rounded-none [&>button]:hidden" style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}>
 
         {phase === "setup" ? (
           <>

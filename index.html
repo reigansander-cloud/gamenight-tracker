@@ -8,7 +8,21 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="GameNight" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // iPhone home-screen app: dark schemes draw the page under the clock/battery (white text on the
+      // scheme's own colour); light schemes keep the standard light bar (dark text). iOS reads this when
+      // the app opens, so a scheme change shows up there the next time it's opened.
+      (function () {
+        var s = "royal";
+        try { s = localStorage.getItem("colorScheme") || "royal"; } catch (e) {}
+        var dark = ["midnight", "abyss", "forest", "ancient", "chaos"].indexOf(s) >= 0;
+        var m = document.createElement("meta");
+        m.name = "apple-mobile-web-app-status-bar-style";
+        m.content = dark ? "black-translucent" : "default";
+        document.head.appendChild(m);
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f5f3f0" />
     <title>GameNight</title>
   </head>

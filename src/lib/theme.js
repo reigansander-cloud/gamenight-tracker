@@ -1,22 +1,22 @@
-// One colour scheme: Gilded — Abyss's near-black layout with gold where Abyss had purple / pink.
+// One colour scheme: Gilded — Abyss's near-black purple background with gold where Abyss had purple / pink.
 export const SCHEME_VARS = {
   gilded: {
-    "--background": "40 30% 5%",
-    "--foreground": "45 25% 92%",
-    "--card": "40 26% 9%",
-    "--card-foreground": "45 25% 92%",
-    "--popover": "40 26% 9%",
-    "--popover-foreground": "45 25% 92%",
+    "--background": "270 35% 6%",
+    "--foreground": "270 15% 92%",
+    "--card": "270 30% 10%",
+    "--card-foreground": "270 15% 92%",
+    "--popover": "270 30% 10%",
+    "--popover-foreground": "270 15% 92%",
     "--primary": "43 78% 52%",
     "--primary-foreground": "40 45% 8%",
     "--secondary": "32 80% 50%",
     "--secondary-foreground": "40 45% 8%",
-    "--muted": "40 22% 14%",
-    "--muted-foreground": "42 12% 60%",
+    "--muted": "270 25% 15%",
+    "--muted-foreground": "270 10% 58%",
     "--accent": "36 85% 56%",
     "--accent-foreground": "40 45% 8%",
-    "--border": "40 24% 18%",
-    "--input": "40 24% 18%",
+    "--border": "270 25% 18%",
+    "--input": "270 25% 18%",
     "--ring": "43 78% 52%",
   },
 };

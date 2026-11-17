@@ -15,10 +15,10 @@ import ListPickerDialog from "@/components/ListPickerDialog";
 import { applyScheme } from "@/lib/theme";
 
 const HERO_IMAGES = [
-  "https://media.base44.com/images/public/6a19f3b4f90d0e3e68621e83/b3011b957_generated_image.png",
-  "https://media.base44.com/images/public/6a19f3b4f90d0e3e68621e83/7d2f5e603_generated_image.png",
-  "https://media.base44.com/images/public/6a19f3b4f90d0e3e68621e83/b66b2363b_generated_image.png",
-  "https://media.base44.com/images/public/6a19f3b4f90d0e3e68621e83/daf012359_generated_image.png",
+  "https://lh3.googleusercontent.com/d/12S4MkqiFRVomQ9MoKgHnC8BNTdn31IGO",
+  "https://lh3.googleusercontent.com/d/1BirJrqeNMNpsKnXlfmtTvii1TMwNDBgU",
+  "https://lh3.googleusercontent.com/d/1FCcl7uXbV1G8HzncEvu5XwDaVsrFM-VQ",
+  "https://lh3.googleusercontent.com/d/1RPT6QO9aBF5WC0ezGUpcvtdyBVO9eDX6",
 ];
 
 const emptyPlayer = () => ({ name: "", score: undefined, is_winner: false });

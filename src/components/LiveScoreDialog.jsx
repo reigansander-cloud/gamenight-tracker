@@ -8,7 +8,7 @@ import DiceRoller from "@/components/DiceRoller";
 import { MtgCardButtons, CmdDamageEditStrip, PoisonEditStrip, SlainOverlay, useMtgState } from "@/components/MtgControls";
 import { isGold, goldFillStyle } from "@/lib/playerColor";
 
-const SKULL_ICON_URL = "https://media.base44.com/images/public/6a19f3b4f90d0e3e68621e83/8c9f4a24b_triple-skulls.png";
+const SKULL_ICON_URL = "https://lh3.googleusercontent.com/d/1hruhRMxg86lUvgzBqToDoFnHVfuyu7ab";
 
 function loadCardImages() {
   try { return JSON.parse(localStorage.getItem("liveScoreCardImages") || "{}"); } catch { return {}; }

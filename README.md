@@ -1,6 +1,6 @@
 # GameNight
 
-The GameNight tracker, moved off Base44. Same pages and components as before; the data now lives in a
+The GameNight tracker, moved off Base44. Live at https://reigansander-cloud.github.io/gamenight-tracker/ Same pages and components as before; the data now lives in a
 Google Sheet ("GameNight") and the site is hosted on GitHub Pages.
 
 ## How it fits together
@@ -9,8 +9,8 @@ Google Sheet ("GameNight") and the site is hosted on GitHub Pages.
   (`.github/workflows/deploy.yml`).
 - **The sheet** has a small Apps Script web app (`apps-script/GameNightApi.gs`) that the site reads and writes
   through. Tabs: `Games`, `Game Players`, `Players`, `Settings`. You can edit them directly in the sheet.
-- **The key**: the site asks for it once per device and remembers it. The sheet's **GameNight menu →
-  Tracker link and key** shows it; **Change the key** makes a new one (the old one stops working everywhere).
+- **No login**: anyone with the site link can view and log games. The sheet's key (GameNight menu →
+  Tracker link and key) is only needed for bulk imports.
 - **Uploaded pictures** (avatars, live-score backgrounds) go to a Drive folder called *GameNight Uploads*.
 
 `src/api/base44Client.js` is a stand-in for the old Base44 SDK, so the pages still call

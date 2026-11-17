@@ -798,7 +798,7 @@ export default function LiveScoreDialog({ open, onClose, players, gameName, cust
 
             {/* Toolbar */}
             <div className="flex gap-2 px-4 py-3 flex-shrink-0 border-t border-border bg-background">
-              <Button type="button" variant="outline" size="icon" onPointerDown={(e) => { e.stopPropagation(); onClose(); }}><X className="w-4 h-4" /></Button>
+              <Button type="button" variant="outline" size="icon" onClick={(e) => { e.stopPropagation(); onClose(); }}><X className="w-4 h-4" /></Button>
               <Button type="button" variant={settingsOpen ? "default" : "outline"} size="icon" onPointerDown={(e) => { e.stopPropagation(); setSettingsOpen((v) => !v); }}>
                 <Settings2 className="w-4 h-4" />
               </Button>

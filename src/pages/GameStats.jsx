@@ -1,7 +1,10 @@
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { Gamepad2, Trophy, Hash, Target } from "lucide-react";
+import { Gamepad2, Trophy, Hash, Target, Pencil, Check, X, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ShrinkText from "@/components/ShrinkText";
@@ -45,6 +48,68 @@ function dedupeFactionsPerGame(games) {
   return map;
 }
 
+// The game's name in its popup; the pencil lets you fix it on every log of that game at once.
+function GameNameEditor({ name, allNames }) {
+  const queryClient = useQueryClient();
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(name);
+
+  const rename = useMutation({
+    mutationFn: (to) => base44.entities.GameLog.renameAll(name, to),
+    onSuccess: (count, to) => {
+      queryClient.invalidateQueries({ queryKey: ["gamelogs"] });
+      queryClient.invalidateQueries({ queryKey: ["userPreferences"] });
+      toast.success(`Renamed to "${to}" on ${count} logged game${count === 1 ? "" : "s"}`);
+      setEditing(false);
+    },
+    onError: (err) => toast.error(err.message || "Couldn't rename the game"),
+  });
+
+  const save = () => {
+    const to = draft.trim();
+    if (!to) { setEditing(false); return; }   // (saving the same name still tidies every log to exactly this spelling)
+    const mergesInto = allNames.find((n) => n.toLowerCase() === to.toLowerCase() && n.toLowerCase() !== name.toLowerCase());
+    if (mergesInto && !window.confirm(`"${mergesInto}" already exists. Merge these logs into it?`)) return;
+    rename.mutate(to);
+  };
+
+  if (!editing) {
+    return (
+      <div className="flex items-center gap-2 pr-6">
+        <DialogTitle className="font-display text-base">{name}</DialogTitle>
+        <button
+          type="button"
+          onClick={() => { setDraft(name); setEditing(true); }}
+          className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          title="Rename this game on every log"
+        >
+          <Pencil className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 pr-6">
+      <DialogTitle className="sr-only">{name}</DialogTitle>
+      <Input
+        autoFocus
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter") save(); if (e.key === "Escape") { e.stopPropagation(); setEditing(false); } }}
+        className="h-9 text-base bg-card"
+        disabled={rename.isPending}
+      />
+      <Button type="button" size="icon" className="h-9 w-9 shrink-0" onClick={save} disabled={rename.isPending}>
+        {rename.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+      </Button>
+      <Button type="button" size="icon" variant="outline" className="h-9 w-9 shrink-0" onClick={() => setEditing(false)} disabled={rename.isPending}>
+        <X className="w-4 h-4" />
+      </Button>
+    </div>
+  );
+}
+
 function GameCard({ game, gameData }) {
   const maxPlays = Math.max(...gameData.map((g) => g.timesPlayed));
   const [popupOpen, setPopupOpen] = useState(false);
@@ -78,7 +143,7 @@ function GameCard({ game, gameData }) {
       <Dialog open={popupOpen} onOpenChange={setPopupOpen}>
         <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-display text-base">{game.name}</DialogTitle>
+            <GameNameEditor name={game.name} allNames={gameData.map((g) => g.name)} />
           </DialogHeader>
           <Tabs defaultValue="games">
             <TabsList className="w-full">
@@ -213,7 +278,7 @@ export default function GameStats() {
         </div>
       ) : (
         <div className="space-y-2">
-          {gameData.map((game) => <GameCard key={game.name} game={game} gameData={gameData} />)}
+          {gameData.map((game) => <GameCard key={game.name.toLowerCase()} game={game} gameData={gameData} />)}
         </div>
       )}
     </div>

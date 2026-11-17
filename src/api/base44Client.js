@@ -122,8 +122,16 @@ function toBase64(file) {
   });
 }
 
+const entities = Object.fromEntries(ENTITIES.map((n) => [n, entity(n)]));
+// Renames a game on every log at once (plus any templates saved under its name).
+entities.GameLog.renameAll = async (from, to) => {
+  const out = await call({ action: "renameGame", from, to });
+  dropSnapshot();
+  return out.count;
+};
+
 export const base44 = {
-  entities: Object.fromEntries(ENTITIES.map((n) => [n, entity(n)])),
+  entities,
   integrations: {
     Core: {
       async UploadFile({ file }) {

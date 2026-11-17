@@ -19,6 +19,7 @@
  * POST {key, action:"update", entity, id, data}→ { ok, record }
  * POST {key, action:"delete", entity, id}      → { ok }
  * POST {key, action:"upload", name, mimeType, data(base64)} → { ok, file_url }   (saved in Drive: "GameNight Uploads")
+ * POST {action:"renameGame", from, to}         → renames that game on every log (and its templates) → { ok, count }
  * POST {key, action:"import", entities:{...}, replace} → copies records in (keeps their ids and dates)
  * POST {key, action:"copyImages", extra:[urls]} → moves any media.base44.com images into Drive, returns {map}
  */
@@ -108,6 +109,7 @@ function doPost(e) {
     if (body.action === 'create') res = { ok: true, record: createRecord_(ss, body.entity, body.data || {}) };
     else if (body.action === 'update') res = { ok: true, record: updateRecord_(ss, body.entity, body.id, body.data || {}) };
     else if (body.action === 'delete') { deleteRecord_(ss, body.entity, body.id); res = { ok: true }; }
+    else if (body.action === 'renameGame') res = { ok: true, count: renameGame_(ss, body.from, body.to) };
     else if (body.action === 'import') res = { ok: true, counts: importAll_(ss, body.entities || {}, !!body.replace) };
     else if (body.action === 'copyImages') res = { ok: true, map: copyImages_(ss, body.extra || []) };
     else res = { ok: false, error: 'Unknown action "' + body.action + '".' };
@@ -388,6 +390,88 @@ function writePlayerBlock_(sh, at, rows, headers) {
   sh.getRange(at, col.score + 1, rows.length, 1).setNumberFormat('General');
   sh.getRange(at, col.winner + 1, rows.length, 1).setNumberFormat('General').insertCheckboxes();
   sh.getRange(at, 1, rows.length, headers.length).setValues(rows);
+}
+
+// ---------- renaming a game everywhere ----------
+
+/** Every log whose game name matches `from` (ignoring case / spaces) becomes `to`; templates keyed by it follow. */
+function renameGame_(ss, from, to) {
+  var oldKey = String(from || '').trim().toLowerCase();
+  var name = String(to || '').trim();
+  if (!oldKey || !name) throw new Error('Both the old and new game name are needed.');
+  var newKey = name.toLowerCase();
+  var now = new Date().toISOString();
+  var count = 0;
+
+  var gs = ss.getSheetByName(ENTITIES.GameLog.tab);
+  if (gs && gs.getLastRow() > 1) {
+    var col = colMap_(headers_(gs));
+    var range = gs.getRange(2, 1, gs.getLastRow() - 1, gs.getLastColumn());
+    var vals = range.getValues();
+    vals.forEach(function (row) {
+      if (String(row[col.game_name]).trim().toLowerCase() !== oldKey) return;
+      row[col.game_name] = name;
+      if ('updated_date' in col) row[col.updated_date] = now;
+      count++;
+    });
+    if (count) range.setValues(vals);
+  }
+
+  var ps = ss.getSheetByName(PLAYERS_TAB);
+  if (ps && ps.getLastRow() > 1) {
+    var pc = colMap_(headers_(ps));
+    var pr = ps.getRange(2, pc.game + 1, ps.getLastRow() - 1, 1);
+    var pv = pr.getValues();
+    var changed = false;
+    pv.forEach(function (r) { if (String(r[0]).trim().toLowerCase() === oldKey) { r[0] = name; changed = true; } });
+    if (changed) pr.setValues(pv);
+  }
+
+  // custom factions / scoresheets / live-score templates are stored under the lowercase game name
+  if (newKey !== oldKey) {
+    var st = ss.getSheetByName(ENTITIES.UserPreferences.tab);
+    if (st && st.getLastRow() > 1) {
+      var sc = colMap_(headers_(st));
+      ENTITIES.UserPreferences.json.forEach(function (f) {
+        if (!(f in sc)) return;
+        var cr = st.getRange(2, sc[f] + 1, st.getLastRow() - 1, 1);
+        var cv = cr.getValues();
+        var moved = false;
+        cv.forEach(function (r) {
+          var obj; try { obj = JSON.parse(r[0] || '{}'); } catch (e) { return; }
+          if (!obj || typeof obj !== 'object' || !(oldKey in obj)) return;
+          var entry = obj[oldKey];
+          delete obj[oldKey];
+          if (!(newKey in obj)) {
+            if (entry && typeof entry === 'object' && 'label' in entry) entry.label = name;
+            obj[newKey] = entry;
+          }
+          r[0] = JSON.stringify(obj);
+          moved = true;
+        });
+        if (moved) cr.setValues(cv);
+      });
+    }
+  } else {
+    // same name, different capitalisation: just fix the labels
+    var st2 = ss.getSheetByName(ENTITIES.UserPreferences.tab);
+    if (st2 && st2.getLastRow() > 1) {
+      var sc2 = colMap_(headers_(st2));
+      ENTITIES.UserPreferences.json.forEach(function (f) {
+        if (!(f in sc2)) return;
+        var cr2 = st2.getRange(2, sc2[f] + 1, st2.getLastRow() - 1, 1);
+        var cv2 = cr2.getValues();
+        var touched = false;
+        cv2.forEach(function (r) {
+          var obj; try { obj = JSON.parse(r[0] || '{}'); } catch (e) { return; }
+          var entry = obj && obj[oldKey];
+          if (entry && typeof entry === 'object' && 'label' in entry && entry.label !== name) { entry.label = name; r[0] = JSON.stringify(obj); touched = true; }
+        });
+        if (touched) cr2.setValues(cv2);
+      });
+    }
+  }
+  return count;
 }
 
 // ---------- uploads ----------

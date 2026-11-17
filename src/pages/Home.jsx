@@ -243,8 +243,9 @@ export default function Home() {
       toast.error("No previous game to copy players from");
       return;
     }
+    if (last.game_name?.trim()) setGameName(last.game_name.trim());
     setPlayers(names.map((p) => ({ name: p.name.trim(), score: undefined, is_winner: false })));
-    toast.success("Players filled from your last game 🎲");
+    toast.success("Game and players filled from your last game 🎲");
   };
 
   const canOpenScoresheet =
@@ -326,7 +327,7 @@ export default function Home() {
                 size="icon"
                 className="h-8 w-8 shrink-0"
                 onClick={fillFromLastGame}
-                title="Fill players from your last game">
+                title="Fill the game and players from your last game">
                 <Recycle className="w-4 h-4" />
               </Button>
               <Button type="button" variant="outline" size="sm" onClick={handleAddPlayer} className="gap-1.5">

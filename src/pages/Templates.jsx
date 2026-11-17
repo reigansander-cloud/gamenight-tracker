@@ -4,7 +4,6 @@ import { base44 } from "@/api/base44Client";
 import CustomFactionManager from "@/components/CustomFactionManager";
 import CustomScoresheetManager from "@/components/CustomScoresheetManager";
 import LiveScoreTemplates from "@/components/LiveScoreTemplates";
-import { SCHEMES, applyScheme } from "@/lib/theme";
 
 export default function Settings() {
   const queryClient = useQueryClient();
@@ -18,19 +17,9 @@ export default function Settings() {
     },
   });
 
-  const [activeScheme, setActiveScheme] = useState("royal");
   const customFactions = prefsData?.custom_factions || {};
   const customScoresheets = prefsData?.custom_scoresheets || {};
   const liveScoreTemplates = prefsData?.live_score_templates || {};
-
-  // Sync active scheme indicator when DB loads
-  useEffect(() => {
-    if (prefsData?.color_scheme) {
-      setActiveScheme(prefsData.color_scheme);
-      applyScheme(prefsData.color_scheme);
-      localStorage.setItem("colorScheme", prefsData.color_scheme);
-    }
-  }, [prefsData?.color_scheme]);
 
   // Mutation to save preferences
   const savePrefsMutation = useMutation({
@@ -58,37 +47,12 @@ export default function Settings() {
     savePrefsMutation.mutate({ live_score_templates: val });
   };
 
-  const selectScheme = (id) => {
-    setActiveScheme(id);
-    localStorage.setItem("colorScheme", id);
-    applyScheme(id); // immediate update
-    savePrefsMutation.mutate({ color_scheme: id });
-  };
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="font-display font-bold text-2xl text-foreground">Settings</h1>
-        <p className="text-muted-foreground text-sm mt-1">Customize themes, factions, scoresheets, and starting scores.</p>
-      </div>
-
-      {/* Theme picker */}
-      <div className="border border-border rounded-xl p-4 space-y-3">
-        <p className="text-sm font-medium text-foreground">Theme</p>
-        <div className="flex flex-wrap gap-2">
-          {SCHEMES.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => selectScheme(s.id)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                activeScheme === s.id ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-muted text-foreground"
-              }`}
-            >
-              <span className="w-3.5 h-3.5 rounded-full flex-shrink-0" style={{ background: `hsl(${s.primary})` }} />
-              {s.label}
-            </button>
-          ))}
-        </div>
+        <p className="text-muted-foreground text-sm mt-1">Customize factions, scoresheets, and starting scores.</p>
       </div>
 
       <div className="space-y-3">

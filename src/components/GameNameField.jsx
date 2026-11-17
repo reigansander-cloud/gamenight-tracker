@@ -27,7 +27,7 @@ export default function GameNameField({ value, onChange, suggestions = [] }) {
           setOpen(true);
         }}
         onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
+        onBlur={() => setTimeout(() => setOpen(false), 150)}
         className="text-base bg-card"
       />
       {open && matches.length > 0 && (
@@ -36,9 +36,14 @@ export default function GameNameField({ value, onChange, suggestions = [] }) {
             <button
               key={name}
               type="button"
-              // Select on pointer-down so the tap lands before the input blurs
-              onPointerDown={(e) => {
+              // Keep the input focused on press (so the list stays open), and choose on the
+              // completed tap: the list is still there when the tap finishes, so it can't
+              // fall through to a button underneath.
+              onPointerDown={(e) => e.preventDefault()}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 pick(name);
               }}
               className="block w-full text-left px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted active:bg-muted/70 transition-colors truncate"

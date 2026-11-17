@@ -16,7 +16,6 @@ async function call(body) {
   const url = getSheetUrl();
   const key = getSheetKey();
   if (!url) throw new SheetError("The sheet link isn't set yet.", 401);
-  if (!key) throw new SheetError("Enter the key first.", 401);
   let res;
   try {
     res = body
@@ -25,9 +24,9 @@ async function call(body) {
           redirect: "follow",
           // text/plain keeps this a "simple" request, so Apps Script doesn't need CORS preflight
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ key, ...body }),
+          body: JSON.stringify(key ? { key, ...body } : body),
         })
-      : await fetch(url + (url.includes("?") ? "&" : "?") + "key=" + encodeURIComponent(key), { redirect: "follow" });
+      : await fetch(url, { redirect: "follow" });
   } catch {
     throw new SheetError("Couldn't reach the sheet. Check your connection and try again.", 0);
   }
@@ -135,7 +134,6 @@ export const base44 = {
     },
   },
   auth: {
-    // "Logged in" now just means: this browser has the sheet's key, and the sheet accepts it.
     async me() {
       const out = await call({ action: "ping" });
       return { role: "admin", sheet: out.sheet };

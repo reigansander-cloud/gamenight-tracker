@@ -2,8 +2,8 @@
  * GAMENIGHT — the sheet behind the GameNight tracker (https://<you>.github.io/gamenight-tracker/).
  *
  * Set up once: Deploy → New deployment → type "Web app" → Execute as: Me, Who has access: Anyone → Deploy.
- * Then GameNight menu → "Tracker link and key" shows the two things the site needs.
- * Only someone with both the link and the key can read or change the sheet through it.
+ * The site is open: anyone with the link can read and log games (no key).
+ * The key (GameNight menu → "Tracker link and key") is only needed for the bulk "import" / "copyImages" actions.
  *
  * Tabs (made automatically the first time they're needed):
  *   Games         one row per logged game
@@ -64,8 +64,7 @@ function showTrackerLink() {
     '<b>Link</b> (Deploy → Manage deployments → the web app\'s URL, ending in /exec):<br>' +
     '<input style="width:100%" readonly onclick="this.select()" value="' + url + '"><br><br>' +
     '<b>Key</b>:<br><input style="width:100%;font-size:18px" readonly onclick="this.select()" value="' + trackerKey_() + '">' +
-    '<p style="color:#666">Enter the key on the GameNight site once per device. Anyone with the key and the link ' +
-    'can change this sheet, so only give it to people you play with.</p></div>').setWidth(460).setHeight(260);
+    '<p style="color:#666">The site itself needs no key. The key is only for bulk imports.</p></div>').setWidth(460).setHeight(260);
   SpreadsheetApp.getUi().showModalDialog(html, 'GameNight link and key');
 }
 
@@ -81,8 +80,6 @@ function out_(obj) {
 }
 
 function doGet(e) {
-  var p = (e && e.parameter) || {};
-  if (String(p.key || '') !== trackerKey_()) return out_({ ok: false, auth: false, error: 'That key is wrong.' });
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var data = {};
   Object.keys(ENTITIES).forEach(function (name) { data[name] = readEntity_(ss, name); });
@@ -92,7 +89,8 @@ function doGet(e) {
 function doPost(e) {
   var body;
   try { body = JSON.parse(e.postData.contents); } catch (err) { return out_({ ok: false, error: 'Could not read what the site sent.' }); }
-  if (String(body.key || '') !== trackerKey_()) return out_({ ok: false, auth: false, error: 'That key is wrong.' });
+  var adminOnly = body.action === 'import' || body.action === 'copyImages';
+  if (adminOnly && String(body.key || '') !== trackerKey_()) return out_({ ok: false, auth: false, error: 'That key is wrong.' });
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   if (body.action === 'ping') return out_({ ok: true, sheet: ss.getName() });
   if (body.action === 'upload') {

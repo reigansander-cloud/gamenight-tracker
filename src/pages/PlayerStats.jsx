@@ -174,7 +174,7 @@ export default function PlayerStats() {
                   </div>
                 </div>
                 {i === 0 && playerData.length > 1 && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-accent/20 text-xs font-medium text-accent">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-accent/20 text-xs font-medium text-accent-foreground">
                     <Trophy className="w-3 h-3 text-accent" /> Top Player
                   </span>
                 )}

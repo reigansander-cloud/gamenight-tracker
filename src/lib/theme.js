@@ -1,28 +1,26 @@
-// One colour scheme: Gilded — Abyss's near-black purple background with gold where Abyss had purple / pink.
+// One colour scheme: Abyss.
 export const SCHEME_VARS = {
-  gilded: {
+  abyss: {
     "--background": "270 35% 6%",
     "--foreground": "270 15% 92%",
     "--card": "270 30% 10%",
     "--card-foreground": "270 15% 92%",
-    "--popover": "270 30% 10%",
-    "--popover-foreground": "270 15% 92%",
-    "--primary": "43 78% 52%",
-    "--primary-foreground": "40 45% 8%",
-    "--secondary": "32 80% 50%",
-    "--secondary-foreground": "40 45% 8%",
+    "--primary": "270 70% 60%",
+    "--primary-foreground": "0 0% 98%",
+    "--secondary": "320 60% 55%",
+    "--secondary-foreground": "0 0% 98%",
     "--muted": "270 25% 15%",
     "--muted-foreground": "270 10% 58%",
-    "--accent": "36 85% 56%",
-    "--accent-foreground": "40 45% 8%",
+    "--accent": "320 60% 55%",
+    "--accent-foreground": "0 0% 98%",
     "--border": "270 25% 18%",
     "--input": "270 25% 18%",
-    "--ring": "43 78% 52%",
+    "--ring": "270 70% 60%",
   },
 };
 
 export const SCHEMES = [
-  { id: "gilded", label: "Gilded", primary: "43 78% 52%" },
+  { id: "abyss", label: "Abyss", primary: "270 70% 60%" },
 ];
 
 export function hslToHex(h, s, l) {
@@ -38,8 +36,8 @@ export function hslToHex(h, s, l) {
 }
 
 export function applyScheme(id) {
-  // (older saved choices like "abyss" or "royal" all show as Gilded now)
-  const vars = SCHEME_VARS.gilded;
+  // (any older saved choice shows as Abyss now)
+  const vars = SCHEME_VARS.abyss;
   Object.entries(vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
   const bg = vars["--background"];
   const [h, s, l] = bg.split(" ").map((v) => parseFloat(v));
@@ -47,5 +45,5 @@ export function applyScheme(id) {
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", themeColor);
 }
 
-// Apply immediately on import
-applyScheme("gilded");
+// Apply immediately on import (before DB loads) using localStorage
+applyScheme("abyss");

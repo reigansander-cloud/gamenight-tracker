@@ -95,7 +95,7 @@ export default function History() {
                           key={i}
                           className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
                             p.is_winner
-                              ? "bg-accent/20 text-accent font-semibold border border-accent/30"
+                              ? "bg-accent/20 text-accent-foreground border border-accent/30"
                               : "bg-muted text-muted-foreground"
                           }`}
                         >

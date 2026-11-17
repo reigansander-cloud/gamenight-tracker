@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --font-sans: 'Inter', sans-serif;
+    --font-display: 'Space Grotesk', sans-serif;
+    --background: 225 20% 97%;
+    --foreground: 240 30% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 30% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 30% 12%;
+    --primary: 245 58% 28%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 38 92% 60%;
+    --secondary-foreground: 240 30% 12%;
+    --muted: 225 15% 93%;
+    --muted-foreground: 240 10% 46%;
+    --accent: 38 92% 60%;
+    --accent-foreground: 240 30% 12%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 225 15% 88%;
+    --input: 225 15% 88%;
+    --ring: 245 58% 28%;
+    --chart-1: 245 58% 50%;
+    --chart-2: 38 92% 55%;
+    --chart-3: 160 60% 40%;
+    --chart-4: 340 65% 55%;
+    --chart-5: 200 70% 50%;
+    --radius: 0.75rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 20% 8%;
+    --foreground: 0 0% 95%;
+    --card: 240 15% 12%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 15% 12%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 245 58% 55%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 38 80% 50%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 12% 18%;
+    --muted-foreground: 240 8% 60%;
+    --accent: 38 80% 50%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 12% 20%;
+    --input: 240 12% 20%;
+    --ring: 245 58% 55%;
+    --chart-1: 245 58% 60%;
+    --chart-2: 38 92% 60%;
+    --chart-3: 160 60% 50%;
+    --chart-4: 340 65% 60%;
+    --chart-5: 200 70% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Prevent iOS zoom on input focus */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}

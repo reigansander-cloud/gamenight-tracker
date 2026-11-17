@@ -1,6 +1,6 @@
-// The GameNight sheet's web app (GameNightApi.gs). The key is NOT here (this copy is on the web):
+// The GameNight sheet's web app (apps-script/GameNightApi.gs).
 // each person pastes it once and their browser remembers it.
-export const SHEET_URL = "";
+export const SHEET_URL = "https://script.google.com/macros/s/AKfycbxhls64VPLWJg-0RbuKIeKrdqcm6evlhfl5gsJVo6zBbdhR8gNB9yi2dxyDwcwhQ5Xd/exec";
 
 const KEY_STORE = "gamenight_sheet_key";
 const URL_STORE = "gamenight_sheet_url";

@@ -33,6 +33,10 @@ var ENTITIES = {
 var PLAYERS_TAB = 'Game Players';
 var PLAYER_FIELDS = ['game_id', 'date_played', 'game', 'name', 'faction', 'score', 'winner'];
 
+// The GameNight sheet (used when the script isn't opened from inside it, e.g. as the web app).
+var SHEET_ID = '12-kmQwLT8-7ej_5N15iiHnJB1NNZyQnk4hyQVpwx2d4';
+function ss_() { return SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SHEET_ID); }
+
 // ---------- menu, key ----------
 
 function onOpen() {
@@ -80,7 +84,7 @@ function out_(obj) {
 }
 
 function doGet(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = ss_();
   var data = {};
   Object.keys(ENTITIES).forEach(function (name) { data[name] = readEntity_(ss, name); });
   return out_({ ok: true, data: data, sheet: ss.getName(), at: new Date().toISOString() });
@@ -91,7 +95,7 @@ function doPost(e) {
   try { body = JSON.parse(e.postData.contents); } catch (err) { return out_({ ok: false, error: 'Could not read what the site sent.' }); }
   var adminOnly = body.action === 'import' || body.action === 'copyImages';
   if (adminOnly && String(body.key || '') !== trackerKey_()) return out_({ ok: false, auth: false, error: 'That key is wrong.' });
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = ss_();
   if (body.action === 'ping') return out_({ ok: true, sheet: ss.getName() });
   if (body.action === 'upload') {
     try { return out_({ ok: true, file_url: saveUpload_(body) }); }
@@ -119,7 +123,7 @@ function doPost(e) {
 // ---------- tabs ----------
 
 function setupTabs() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = ss_();
   Object.keys(ENTITIES).forEach(function (n) { tab_(ss, ENTITIES[n].tab, ENTITIES[n].fields); });
   tab_(ss, PLAYERS_TAB, PLAYER_FIELDS);
 }

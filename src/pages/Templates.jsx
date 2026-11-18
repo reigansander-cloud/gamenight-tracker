@@ -30,6 +30,11 @@ export default function Settings() {
         return base44.entities.UserPreferences.create(data);
       }
     },
+    // Show the change straight away, so quick edits (adding several categories in a row)
+    // each build on the one before instead of on the last saved copy.
+    onMutate: (data) => {
+      queryClient.setQueryData(["userPreferences"], (old) => ({ ...(old || {}), ...data }));
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userPreferences"] });
     },

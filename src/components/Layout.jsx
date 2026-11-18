@@ -1,5 +1,6 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import ColorSchemeSwitcher from "@/components/ColorSchemeSwitcher";
+import SaveStatus from "@/components/SaveStatus";
 import { Dice5, History, Users, BarChart3 } from "lucide-react";
 
 const navItems = [
@@ -41,7 +42,10 @@ export default function Layout() {
               );
             })}
           </nav>
-          <ColorSchemeSwitcher />
+          <div className="flex items-center gap-2">
+            <SaveStatus />
+            <ColorSchemeSwitcher />
+          </div>
         </div>
       </header>
 

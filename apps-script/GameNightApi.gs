@@ -300,6 +300,9 @@ function cfg_(entity) {
 function createRecord_(ss, entity, data) {
   var cfg = cfg_(entity);
   var sh = tab_(ss, cfg.tab, cfg.fields);
+  // The site sends its own ids and retries after dropped connections: a repeat of an
+  // already-saved record just updates it instead of adding a duplicate row.
+  if (data.id && findRow_(sh, data.id)) return updateRecord_(ss, entity, data.id, data);
   var now = new Date().toISOString();
   var rec = {};
   Object.keys(data).forEach(function (k) { rec[k] = data[k]; });
